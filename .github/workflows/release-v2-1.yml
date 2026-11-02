@@ -1,0 +1,50 @@
+name: Publish Lexicon V2.1 source release
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/release-v2-1.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build source-only release asset
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s index.html
+          test -d assets
+          mkdir -p dist/site
+          cp index.html README.md site.js landing-cta.js dist/site/
+          cp -R assets dist/site/
+          cd dist && zip -qr lexicon-v2.1.0-repository-source.zip site
+      - name: Create release with accurate image status
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cat > notes.md <<'EOF'
+          ## Lexicon Landing Page 2.1.0 — Repository source
+
+          Contains the current main branch including campus photographs, updated school names,
+          footer cleanup and progressive AI-photo support with original imagery fallback.
+
+          **Packaging limitation:** The six approved AI-photo files have not yet been committed to
+          this GitHub repository. The attached repository-source ZIP therefore uses the existing
+          fallback student portraits. Do not mistake the repository-source asset for the
+          image-inclusive deployment package provided separately in the ChatGPT conversation.
+
+          To install the approved six-image pack in this repo, upload
+          `lexicon-ai-photo-pack.zip` at repository root. The existing workflow
+          `.github/workflows/import-ai-photo-pack.yml` will extract it and commit the
+          WebP files. Repackage after extraction for a complete GitHub-hosted distribution.
+
+          Before going live: confirm SchoolFlow approved hostname and test form submissions.
+          AI student portraits are illustrations, not documentary photographs.
+          EOF
+          if gh release view v2.1.0 >/dev/null 2>&1; then
+            echo "Tag v2.1.0 already exists"; exit 1
+          fi
+          gh release create v2.1.0 dist/lexicon-v2.1.0-repository-source.zip --title "Lexicon Landing Page v2.1.0 (source release)" --notes-file notes.md --target "${GITHUB_SHA}" --latest
