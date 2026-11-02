@@ -1,0 +1,52 @@
+name: Publish Lexicon Landing Page V2
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/release-v2.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Package static landing page
+        run: |
+          set -euo pipefail
+          test -s index.html
+          test -s README.md
+          test -s site.js
+          test -s landing-cta.js
+          test -d assets
+          mkdir -p dist/lexicon-landing-page-v2
+          cp index.html README.md site.js landing-cta.js dist/lexicon-landing-page-v2/
+          cp -R assets dist/lexicon-landing-page-v2/
+          cd dist
+          zip -qr lexicon-landing-page-v2.0.0.zip lexicon-landing-page-v2
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          cat > release-notes.md <<'EOF'
+          ## Lexicon Landing Page V2 — Initial release
+
+          **Included**
+          - Static responsive admissions landing page and local images/assets.
+          - SchoolFlow inline enquiry form integration and campus/grade enquiry CTAs.
+          - Updated campus names: The Lexicon International School, Wagholi; The Lexicon School, Hadapsar; The Lexicon International School KalyaniNagar.
+          - Removed external "Visit official school website" footer link.
+
+          **Known limitations / release checks**
+          - The actual school campus photos requested later have not yet been installed in the campus cards. Existing illustrations remain.
+          - The student/teacher imagery is illustrative; not verified Lexicon photography.
+          - Validate SchoolFlow domain approval, submission, mobile layout and privacy notice on the deployment domain before using paid traffic.
+          - This release packages static website files; it does not deploy hosting or the CRM service.
+          EOF
+          if gh release view v2.0.0 >/dev/null 2>&1; then
+            echo 'v2.0.0 already exists; refusing to overwrite.'
+            exit 1
+          fi
+          gh release create v2.0.0 dist/lexicon-landing-page-v2.0.0.zip --title "Lexicon Landing Page V2.0.0" --notes-file release-notes.md --target "${GITHUB_SHA}" --latest
