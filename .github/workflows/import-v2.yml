@@ -1,0 +1,56 @@
+name: Extract V2 landing page into main
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'v2.zip'
+      - '.github/workflows/import-v2.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  extract:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Extract and validate V2 contents
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          from zipfile import ZipFile
+          import shutil
+          archive = Path("v2.zip")
+          if not archive.is_file():
+              print("Already extracted; nothing to do.")
+              raise SystemExit(0)
+          with ZipFile(archive) as z:
+              entries = [i for i in z.infolist() if not i.is_dir()]
+              if not any(i.filename == "v2/index.html" for i in entries):
+                  raise SystemExit("Missing v2/index.html")
+              for info in entries:
+                  p = Path(info.filename)
+                  if p.is_absolute() or ".." in p.parts or not p.parts or p.parts[0] != "v2":
+                      raise SystemExit(f"Unsafe path: {info.filename}")
+                  dest = Path(*p.parts[1:])
+                  if not dest.parts or dest.parts[0] == ".github":
+                      raise SystemExit(f"Forbidden output: {info.filename}")
+                  dest.parent.mkdir(parents=True, exist_ok=True)
+                  with z.open(info) as src, dest.open("wb") as out:
+                      shutil.copyfileobj(src, out)
+          archive.unlink()
+          PY
+      - name: Commit extracted source files to main
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes"
+          else
+            git commit -m "Import extracted V2 landing page from v2.zip"
+            git push origin HEAD:main
+          fi
