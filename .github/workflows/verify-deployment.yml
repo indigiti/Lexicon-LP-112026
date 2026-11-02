@@ -1,0 +1,32 @@
+name: Verify Lexicon deployment
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/verify-deployment.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  smoke-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check live landing page and required assets
+        shell: bash
+        env:
+          LIVE_URL: https://lexicon.digiti.in/ver/demo/v2/
+        run: |
+          set -euo pipefail
+          echo "Checking $LIVE_URL"
+          code=$(curl -L -sS --retry 2 --max-time 20 -o /tmp/lexicon-page.html -w '%{http_code}' "$LIVE_URL")
+          echo "Page HTTP $code"
+          test "$code" = "200"
+          grep -qi 'lexicon' /tmp/lexicon-page.html
+          grep -q 'schoolflow-admissions' /tmp/lexicon-page.html
+          grep -q 'stage.digiti.in/scrm/embed/' /tmp/lexicon-page.html
+          for asset in assets/lexicon-ai-young.webp assets/lexicon-ai-senior.webp assets/lexicon-ai-primary.webp assets/lexicon-ai-teacher.webp assets/lexicon-ai-friends.webp assets/lexicon-ai-family.webp; do
+            code=$(curl -L -sS --max-time 15 -o /dev/null -w '%{http_code}' "${LIVE_URL}${asset}")
+            echo "$asset HTTP $code"
+            test "$code" = "200"
+          done
+          echo "HTTP and asset checks passed. Interactive SchoolFlow submission remains a separate manual acceptance test."
