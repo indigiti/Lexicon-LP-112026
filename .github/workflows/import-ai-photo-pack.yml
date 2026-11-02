@@ -1,0 +1,53 @@
+name: Install approved Lexicon AI image pack
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'lexicon-ai-photo-pack.zip'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  install-images:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Extract and validate six approved portrait assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          from zipfile import ZipFile
+          expected = [
+            "assets/lexicon-ai-young.webp",
+            "assets/lexicon-ai-senior.webp",
+            "assets/lexicon-ai-primary.webp",
+            "assets/lexicon-ai-teacher.webp",
+            "assets/lexicon-ai-friends.webp",
+            "assets/lexicon-ai-family.webp",
+          ]
+          archive = Path("lexicon-ai-photo-pack.zip")
+          if not archive.exists():
+              raise SystemExit("Upload lexicon-ai-photo-pack.zip to the repository root first.")
+          with ZipFile(archive) as z:
+              if sorted(z.namelist()) != sorted(expected):
+                  raise SystemExit("Pack must contain exactly the six assets at assets/lexicon-ai-*.webp")
+              for name in expected:
+                  data = z.read(name)
+                  if not (2000 <= len(data) <= 2_000_000) or data[:4] != b'RIFF' or data[8:12] != b'WEBP':
+                      raise SystemExit(f"Not a valid, size-bounded WebP: {name}")
+                  destination = Path(name)
+                  destination.parent.mkdir(parents=True, exist_ok=True)
+                  destination.write_bytes(data)
+          archive.unlink()
+          PY
+      - name: Commit extracted images
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/lexicon-ai-*.webp
+          git add -u lexicon-ai-photo-pack.zip
+          git commit -m "Install six approved Lexicon AI student illustrations"
+          git push origin HEAD:main
