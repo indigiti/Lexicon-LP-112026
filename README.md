@@ -40,3 +40,11 @@ Use **one group embed per page**. Do not add the legacy popup script in addition
 ## Important boundaries
 
 This ZIP has static site assets and the public embed snippet, not the CRM service itself. It cannot guarantee that the staging URL is deployed, reachable, or accepts the current domain. Local `file://` previews and sandbox HTML previews cannot establish an authorized web Origin. No live enrolment, admission seat or campus visit is guaranteed by submitting an enquiry.
+
+## Approved AI student-photo rail (V2 visual refresh)
+
+The six tiles in the main student photo rail can use a matching, generated illustration set. The images depict **fictional students** and must not be represented as photographs of real Lexicon pupils. The original six photo files remain in the repository as fallbacks.
+
+To activate this set, upload **lexicon-ai-photo-pack.zip** to the repository root on `main` using GitHub's Upload files action. GitHub Actions runs `.github/workflows/import-ai-photo-pack.yml`, validates and extracts the exact six WebP files into `assets/`, commits them and removes the pack. The `site.js` loader switches all six pictures as a group only after all six assets are reachable. Do not unzip into a nested directory.
+
+The generated images are illustrations and include AI-rendered uniform details; do not treat their insignia or school uniforms as exact factual representations. Test the page on mobile after the image upload and build a **new** versioned release if distributing a ZIP; the published v2.0.0 asset is immutable.
