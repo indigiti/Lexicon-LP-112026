@@ -1,0 +1,64 @@
+name: Install verified campus photography
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/install-campus-photos.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download campus-specific public image references
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p assets
+          curl -fLsS --retry 3 --max-time 45 'https://d3bat55ebwjhsf.cloudfront.net/schools/cover/3373/user_office_wgh%40lexiconedu.in/unnamed_14.webp' -o assets/campus-wagholi.webp
+          curl -fLsS --retry 3 --max-time 45 'https://d3bat55ebwjhsf.cloudfront.net/schools/infra/images/vbcb.webp' -o assets/campus-hadapsar.webp
+          curl -fLsS --retry 3 --max-time 45 'https://yellowslate-blog.blr1.cdn.digitaloceanspaces.com/2024/06/scrnli_6_7_2024_11-11-13-AM.png' -o assets/campus-kalyani-nagar.png
+          python3 - <<'PY'
+          from pathlib import Path
+          for path in (Path('assets/campus-wagholi.webp'), Path('assets/campus-hadapsar.webp'), Path('assets/campus-kalyani-nagar.png')):
+              data=path.read_bytes()
+              if len(data)<5000: raise SystemExit(f'Image too small: {path}: {len(data)}')
+              if path.suffix=='.webp' and (data[:4]!=b'RIFF' or data[8:12]!=b'WEBP'): raise SystemExit(f'Not WebP: {path}')
+              if path.suffix=='.png' and data[:8]!=b'\x89PNG\r\n\x1a\n': raise SystemExit(f'Not PNG: {path}')
+              print(path, len(data))
+          PY
+      - name: Insert campus photographs and fix campus typography
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+          replacements={
+            '<div class="campus-visual"><span class="letter" aria-hidden="true">W</span><small>WAGHOLI</small></div>':'<div class="campus-visual"><img src="assets/campus-wagholi.webp" alt="The Lexicon International School, Wagholi campus entrance" loading="lazy" decoding="async" width="640" height="360"></div>',
+            '<div class="campus-visual"><span class="letter" aria-hidden="true">H</span><small>HADAPSAR</small></div>':'<div class="campus-visual"><img src="assets/campus-hadapsar.webp" alt="The Lexicon School, Hadapsar campus building" loading="lazy" decoding="async" width="640" height="360"></div>',
+            '<div class="campus-visual"><span class="letter" aria-hidden="true">K</span><small>KALYANI NAGAR</small></div>':'<div class="campus-visual"><img src="assets/campus-kalyani-nagar.png" alt="The Lexicon International School, Kalyani Nagar campus building and school buses" loading="lazy" decoding="async" width="640" height="360"></div>',
+            '<h3>The Lexicon International School KalyaniNagar</h3>':'<h3>The Lexicon International School, Kalyani Nagar</h3>',
+          }
+          for a,b in replacements.items():
+              if s.count(a)!=1: raise SystemExit(f'Expected exactly one: {a[:90]}')
+              s=s.replace(a,b)
+          css='.campus-visual{height:146px;display:flex;'
+          if css not in s: raise SystemExit('Missing campus CSS anchor')
+          s=s.replace(css,'.campus-visual{height:180px;display:flex;',1)
+          cssend='</style>\n\n<style id="schoolflow-native-landing-style">'
+          if cssend not in s: raise SystemExit('Missing CSS end anchor')
+          s=s.replace(cssend,'.campus-visual:has(img){padding:0;background:#e6ebf1}.campus-visual:has(img)::before,.campus-visual:has(img)::after{display:none}.campus-visual img{width:100%;height:100%;object-fit:cover;object-position:center;display:block}.campus-content h3{letter-spacing:-.035em}\n@media(max-width:640px){.campus-visual:has(img){height:190px}}\n</style>\n\n<style id="schoolflow-native-landing-style">',1)
+          p.write_text(s,encoding='utf-8')
+          PY
+      - name: Commit updated landing page and local assets
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html assets/campus-*
+          if ! git diff --cached --quiet; then
+            git commit -m "Use real campus photographs in all three school cards"
+            git push origin HEAD:main
+          fi
