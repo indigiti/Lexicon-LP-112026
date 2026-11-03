@@ -1,0 +1,120 @@
+name: Validate and package Lexicon thank-you page
+on:
+  pull_request:
+    paths:
+      - 'thank-you/**'
+      - 'README.md'
+      - '.github/workflows/lexicon-thank-you-release.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'thank-you/**'
+      - 'README.md'
+      - '.github/workflows/lexicon-thank-you-release.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate thank-you page
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify landing page, relative assets and tracking contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s index.html
+          test -s thank-you/index.html
+          test -s assets/lexicon-official-logo.png
+          test -s site.js
+          test -s landing-cta.js
+          node --check site.js
+          node --check landing-cta.js
+          python3 - <<'PY'
+          from html.parser import HTMLParser
+          from pathlib import Path
+          from urllib.parse import urljoin
+
+          root = Path("index.html").read_text(encoding="utf-8")
+          thank = Path("thank-you/index.html").read_text(encoding="utf-8")
+          guid = "a8b5de5d-ac84-4169-9347-21144cedd39c"
+          assert "id=\"schoolflow-admissions\"" in root, "Original form must remain intact"
+          assert "stage.digiti.in/scrm/embed/" + guid in root, "Original SchoolFlow form missing"
+          assert "schoolflow-conversion.js" in thank, "Missing privacy-safe conversion script"
+          assert "data-schoolflow-group=\"" + guid + "\"" in thank, "Wrong group identifier"
+          assert 'name="robots" content="noindex, nofollow, noarchive"' in thank
+          assert '<title>Thank You for Your Enquiry' in thank
+          assert "gtag('event'" not in thank and "fbq(" not in thank, "Do not fire conversions on page view"
+          class Parser(HTMLParser):
+              def __init__(self):
+                  super().__init__()
+                  self.links=[]
+              def handle_starttag(self, tag, attrs):
+                  attrs=dict(attrs)
+                  if tag in ("img", "a", "script") and ("src" in attrs or "href" in attrs):
+                      self.links.append(attrs.get("src") or attrs.get("href"))
+          parser=Parser()
+          parser.feed(thank)
+          assert "../assets/lexicon-official-logo.png" in parser.links, "Logo asset missing"
+          assert "../#home" in parser.links, "Admissions home link missing"
+          for link in parser.links:
+              if link.startswith("../assets/"):
+                  assert (Path("thank-you") / link).resolve().is_file(), "Missing asset: " + link
+          assert urljoin("https://lexiconedu.in/lp/thank-you/", "../#home") == "https://lexiconedu.in/lp/#home"
+          print("PASS: thank-you HTML, assets, public form GUID, noindex and conversion handoff")
+          PY
+
+  release:
+    name: Package website with thank-you page
+    needs: validate
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Package complete static site
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p dist/site
+          cp index.html README.md site.js landing-cta.js dist/site/
+          cp -R assets thank-you dist/site/
+          test -s dist/site/thank-you/index.html
+          test -s dist/site/assets/lexicon-official-logo.png
+          cd dist
+          zip -qr lexicon-admissions-v2.2.0-with-thank-you.zip site
+      - name: Publish versioned source release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > release-notes.md <<'EOF'
+          ## Lexicon Schools Admissions v2.2.0 — Thank-you page
+
+          - Original admissions landing page and SchoolFlow short-form embed preserved.
+          - New responsive branded thank-you/index.html with relative logo and home links.
+          - SchoolFlow privacy-safe schoolflow_lead conversion helper installed.
+          - Packaged assets/, form landing page, site scripts and thank-you directory.
+
+          **Hosting remains manual.** Extract the ZIP contents of site/ into the
+          document root serving https://lexiconedu.in/lp/; the new URL becomes
+          https://lexiconedu.in/lp/thank-you/.
+
+          **Required setup:** In SchoolFlow → Landing Pages → Submission & Tracking,
+          approve the exact thank-you URL and enable inline redirect. Configure GTM,
+          Google Ads and Meta Lead tags separately; the helper only provides a
+          schoolflow_lead browser event following a verified successful submission.
+          Verify the event once in GTM Preview and refresh without firing it again.
+          EOF
+          if gh release view v2.2.0 >/dev/null 2>&1; then
+            echo 'v2.2.0 already exists; refusing to overwrite an immutable release.'
+            exit 1
+          fi
+          gh release create v2.2.0 dist/lexicon-admissions-v2.2.0-with-thank-you.zip \
+            --title 'Lexicon Schools Admissions v2.2.0 (with thank-you page)' \
+            --notes-file release-notes.md --target "$GITHUB_SHA" --latest

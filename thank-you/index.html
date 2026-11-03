@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <meta name="description" content="Thank you for contacting The Lexicon Schools admissions team. Learn what happens next after your enquiry.">
+  <title>Thank You for Your Enquiry | The Lexicon Schools</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      color-scheme:light;
+      --ink:#0a1538;--muted:#606f8b;--brand:#5054fb;--border:#e6eafa;
+      --surface:#fff;--soft:#f7f8ff;--focus:#ffc35d;
+    }
+    *,*::before,*::after{box-sizing:border-box}
+    html{min-height:100%;-webkit-text-size-adjust:100%}
+    body{
+      margin:0;min-height:100vh;min-height:100dvh;
+      background:radial-gradient(ellipse at 8% 87%,#eef2ff 0,transparent 35%),
+                 radial-gradient(ellipse at 95% 22%,#f3f1ff 0,transparent 34%),#fff;
+      color:var(--ink);font-family:"DM Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+      -webkit-font-smoothing:antialiased
+    }
+    a{color:inherit;text-decoration:none}
+    a:focus-visible{outline:3px solid var(--focus);outline-offset:5px}
+    h1,h2,p{margin:0}h1,h2{font-family:"Plus Jakarta Sans",system-ui,sans-serif}
+    .wrap{width:min(1120px,calc(100% - 44px));margin:0 auto}
+    header{background:#ffffffef;border-bottom:1px solid #eef0fa}
+    .header-inner{display:flex;align-items:center;justify-content:space-between;gap:18px;min-height:103px}
+    .brand{display:flex;align-items:center;min-width:0}
+    .brand img{display:block;width:182px;max-width:100%;height:auto}
+    .header-link{font-size:13px;color:#37486c;font-weight:700;transition:color .2s}
+    .header-link:hover{color:var(--brand)}
+    main{padding:clamp(42px,6.3vw,84px) 0 50px}
+    .thank-card{
+      position:relative;overflow:hidden;isolation:isolate;background:#fff;
+      border:1px solid var(--border);border-radius:30px;
+      box-shadow:0 30px 94px rgba(28,37,95,.085);
+      display:grid;grid-template-columns:minmax(0,1.2fr) minmax(300px,.8fr);
+    }
+    .thank-card::after{
+      content:"";pointer-events:none;position:absolute;width:240px;height:240px;
+      left:-170px;top:-170px;border-radius:50%;background:#eef0ff;z-index:-1
+    }
+    .content{padding:clamp(30px,5.25vw,72px)}
+    .seal{display:inline-grid;place-items:center;width:75px;height:75px;
+      background:linear-gradient(145deg,#565bff,#4545e7);border-radius:22px;
+      box-shadow:0 14px 30px #5355f83a;color:#fff;margin-bottom:28px}
+    .seal svg{width:40px;height:40px}
+    .eyebrow{color:var(--brand);font-size:11px;letter-spacing:.17em;font-weight:800;text-transform:uppercase;margin-bottom:13px}
+    h1{font-size:clamp(34px,3.65vw,53px);line-height:1.19;letter-spacing:-.07em;max-width:610px}
+    h1 span{color:var(--brand)}
+    .lead{font-size:16px;line-height:1.85;color:var(--muted);max-width:525px;margin-top:19px}
+    .next{margin-top:28px;border-top:1px solid var(--border);padding-top:24px;max-width:520px}
+    .next h2{font-size:15px;letter-spacing:-.02em;margin-bottom:16px}
+    .steps{list-style:none;padding:0;margin:0;display:grid;gap:16px}
+    .steps li{display:flex;align-items:flex-start;gap:13px;color:#475873;font-size:13px;line-height:1.6}
+    .step-no{display:inline-grid;place-items:center;flex:none;width:29px;height:29px;
+      border:1px solid #dde3ff;background:#f3f4ff;color:#4b50d7;font-size:11px;font-weight:800;border-radius:50%}
+    .steps strong{color:#132750}
+    .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}
+    .button{display:inline-flex;align-items:center;justify-content:center;gap:11px;
+      min-height:50px;border-radius:999px;padding:0 24px;font-size:13px;font-weight:800;
+      transition:transform .2s,box-shadow .2s,background .2s}
+    .button:hover{transform:translateY(-2px)}
+    .button-primary{color:#fff;background:linear-gradient(135deg,#5961ff,#4b49f4);box-shadow:0 12px 27px #4e55fa30}
+    .button-primary:hover{box-shadow:0 15px 31px #4e55fa45}
+    .button-secondary{color:#4a4edd;border:1px solid #b8baff;background:#fff}
+    .button-secondary:hover{background:#f3f4ff}
+    .visual{display:flex;flex-direction:column;justify-content:center;align-items:center;
+      padding:42px 35px;background:linear-gradient(155deg,#f7f8ff,#efefff);
+      border-left:1px solid var(--border);position:relative;overflow:hidden}
+    .visual::before,.visual::after{content:"";position:absolute;border:1px solid #d6d9ff;border-radius:50%;pointer-events:none}
+    .visual::before{width:410px;height:410px;left:50%;top:50%;transform:translate(-50%,-50%)}
+    .visual::after{width:300px;height:300px;left:50%;top:50%;transform:translate(-50%,-50%)}
+    .visual-inner{position:relative;z-index:1;display:grid;place-items:center}
+    .check-circle{display:grid;place-items:center;width:155px;height:155px;border-radius:50%;
+      background:#fff;box-shadow:0 20px 45px #4448a315;border:1px solid #e9eafb}
+    .check-circle svg{width:88px;height:88px}
+    .small-badge{margin-top:26px;color:#384b84;background:#fff;border:1px solid #e3e5fa;
+      border-radius:999px;padding:11px 20px;font-size:12px;font-weight:800;letter-spacing:.01em;
+      box-shadow:0 8px 25px #4448a30e;text-align:center}
+    .visual-caption{max-width:245px;text-align:center;color:#7580a4;font-size:12px;
+      line-height:1.6;margin-top:18px}
+    .notice{font-size:12px;color:#697995;line-height:1.8;max-width:760px;text-align:center;margin:24px auto 0}
+    footer{border-top:1px solid #eceffa;color:#7a86a0;font-size:12px;padding:26px 0 32px}
+    footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;line-height:1.65}
+    @media(max-width:800px){
+      .thank-card{grid-template-columns:1fr}
+      .visual{border-left:0;border-top:1px solid var(--border);padding:36px 20px}
+      .visual::before{width:280px;height:280px}.visual::after{width:220px;height:220px}
+      .check-circle{width:112px;height:112px}.check-circle svg{width:64px;height:64px}
+      .content{padding:35px 28px}.header-inner{min-height:88px}
+    }
+    @media(max-width:480px){
+      .wrap{width:min(100% - 30px,1120px)}
+      .brand img{width:145px}.header-link{font-size:11px}
+      main{padding:26px 0 28px}.thank-card{border-radius:22px}
+      .content{padding:32px 23px}.seal{width:64px;height:64px;margin-bottom:23px}
+      .lead{font-size:14px}.actions{display:grid;grid-template-columns:1fr}
+      .button{width:100%}.visual{padding:33px 15px}
+    }
+    @media(prefers-reduced-motion:reduce){.button,.header-link{transition:none}.button:hover{transform:none}}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap header-inner">
+      <a class="brand" href="../#home" aria-label="The Lexicon Schools admissions home">
+        <img src="../assets/lexicon-official-logo.png" width="194" height="92" alt="The Lexicon Schools">
+      </a>
+      <a class="header-link" href="../#home">Back to admissions <span aria-hidden="true">↗</span></a>
+    </div>
+  </header>
+
+  <main class="wrap" id="main">
+    <article class="thank-card" aria-labelledby="thank-title">
+      <div class="content">
+        <div class="seal" aria-hidden="true">
+          <svg viewBox="0 0 48 48" fill="none">
+            <path d="M11 25l9 9L38 15" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <p class="eyebrow">The Lexicon Schools · Admissions</p>
+        <h1 id="thank-title">Thank you for <span>reaching out.</span></h1>
+        <p class="lead">If you've just submitted the admission enquiry form, your details have been received by SchoolFlow. Our admissions team will review your enquiry and contact you using the information you provided.</p>
+
+        <section class="next" aria-labelledby="next-title">
+          <h2 id="next-title">What happens next?</h2>
+          <ol class="steps">
+            <li><span class="step-no" aria-hidden="true">01</span><span><strong>Enquiry review</strong> — Our team checks your preferred class and campus.</span></li>
+            <li><span class="step-no" aria-hidden="true">02</span><span><strong>Admission guidance</strong> — A counsellor can explain eligibility, availability and application steps.</span></li>
+            <li><span class="step-no" aria-hidden="true">03</span><span><strong>Next steps</strong> — Continue with the school's admission process if you wish to apply.</span></li>
+          </ol>
+        </section>
+
+        <div class="actions">
+          <a class="button button-primary" href="../#home">Explore The Lexicon Schools <span aria-hidden="true">→</span></a>
+          <a class="button button-secondary" href="../#campuses">View our campuses <span aria-hidden="true">↗</span></a>
+        </div>
+      </div>
+      <aside class="visual" aria-label="Enquiry next steps illustration">
+        <div class="visual-inner">
+          <div class="check-circle" aria-hidden="true">
+            <svg viewBox="0 0 100 100" fill="none">
+              <circle cx="50" cy="50" r="42" fill="#ecf0ff"/>
+              <circle cx="50" cy="50" r="35" fill="#dfe7ff"/>
+              <path d="M30 51l14 14 27-30" stroke="#5054fb" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <p class="small-badge">Your child's journey starts here</p>
+          <p class="visual-caption">Wagholi · Hadapsar · Kalyani Nagar<br>Learning begins with a conversation.</p>
+        </div>
+      </aside>
+    </article>
+
+    <p class="notice">An enquiry is not a confirmed admission or seat reservation. If you reached this page without submitting a form, please return to the admissions page to send your enquiry.</p>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <span>© 2026 The Lexicon Schools · Pune, Maharashtra</span>
+      <span>Admission availability and eligibility are subject to confirmation by the school.</span>
+    </div>
+  </footer>
+
+  <!-- Only a successful SchoolFlow form submission creates the short-lived
+       browser receipt checked by this script. A direct visit or refresh does
+       not emit another lead conversion. GTM/Meta tags must be configured separately. -->
+  <script defer src="https://stage.digiti.in/scrm/static/schoolflow-conversion.js"
+    data-schoolflow-group="a8b5de5d-ac84-4169-9347-21144cedd39c"></script>
+</body>
+</html>
