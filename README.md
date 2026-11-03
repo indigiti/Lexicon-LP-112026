@@ -48,3 +48,49 @@ The six tiles in the main student photo rail can use a matching, generated illus
 To activate this set, upload **lexicon-ai-photo-pack.zip** to the repository root on `main` using GitHub's Upload files action. GitHub Actions runs `.github/workflows/import-ai-photo-pack.yml`, validates and extracts the exact six WebP files into `assets/`, commits them and removes the pack. The `site.js` loader switches all six pictures as a group only after all six assets are reachable. Do not unzip into a nested directory.
 
 The generated images are illustrations and include AI-rendered uniform details; do not treat their insignia or school uniforms as exact factual representations. Test the page on mobile after the image upload and build a **new** versioned release if distributing a ZIP; the published v2.0.0 asset is immutable.
+
+## Dedicated admission thank-you page and conversion tracking
+
+This version adds **`thank-you/index.html`**. When this repository is deployed
+under `https://lexiconedu.in/lp/`, the page should load at:
+
+`https://lexiconedu.in/lp/thank-you/`
+
+The responsive page uses the existing Lexicon Schools logo, contains no
+parent/student personal information, and is marked `noindex`. It includes the
+SchoolFlow conversion helper for group form
+`a8b5de5d-ac84-4169-9347-21144cedd39c`:
+
+```html
+<script defer
+  src="https://stage.digiti.in/scrm/static/schoolflow-conversion.js"
+  data-schoolflow-group="a8b5de5d-ac84-4169-9347-21144cedd39c"></script>
+```
+
+**Required sCRM configuration (not set by uploading the HTML):**
+
+1. In SchoolFlow Admin, open the linked group form's
+   **Landing Pages → Submission & Tracking**.
+2. Add `https://lexiconedu.in/lp/thank-you/` to the group's
+   **Approved thank-you URLs** and enable
+   **Redirect short inline form after success**.
+3. Ensure `lexiconedu.in` remains approved as a form origin for this group.
+   If the live site is on `www.lexiconedu.in`, authorize that origin as required.
+4. Configure the site's Google Tag Manager container (or approved equivalent).
+   The helper emits `schoolflow_lead` to `dataLayer` after a verified new
+   form submission and same-origin redirect. Configure Google Ads and Meta
+   Lead conversions with appropriate consent and deduplication.
+5. Submit a new authorized test enquiry from the live form. Confirm the lead
+   is stored, the page redirects, GTM Preview receives one `schoolflow_lead`
+   event, and reloading the thank-you page does **not** send another event.
+
+The page alone cannot enable redirect or advertising conversion tracking.
+SchoolFlow does not redirect without the approved thank-you URL, and duplicate
+submissions do not generate a new conversion receipt. Opening the URL directly
+is not evidence of an enquiry.
+
+**Deployment:** Upload the entire `thank-you/` directory alongside the
+existing `index.html` and `assets/` under the same `/lp/` document root.
+Do not replace the root admissions `index.html` with the thank-you file.
+The v2.2.0 GitHub release ZIP packages the new directory, but a GitHub
+release does not automatically deploy it to the web host.
