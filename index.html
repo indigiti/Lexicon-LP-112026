@@ -43,6 +43,14 @@ footer{background:#0e1634;color:#dce1f5;padding:39px 0 30px}.footer-top{display:
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important}}
 .campus-visual:has(img){padding:0;background:#e6ebf1}.campus-visual:has(img)::before,.campus-visual:has(img)::after{display:none}.campus-visual img{width:100%;height:100%;object-fit:cover;object-position:center;display:block}.campus-content h3{letter-spacing:-.035em}
 @media(max-width:640px){.campus-visual:has(img){height:190px}}
+
+/* Premium admissions image strip: progressive enhancement, original layout retained. */
+.premium-photo-rail .photo-tile{border:3px solid rgba(255,255,255,.96);border-radius:30px;box-shadow:0 18px 44px rgba(18,30,70,.13);isolation:isolate;transform:translateZ(0);transition:transform .28s ease,box-shadow .28s ease}
+.premium-photo-rail .photo-tile img{object-position:center;filter:saturate(1.04) contrast(1.025);transition:transform .45s ease}
+@media(hover:hover){.premium-photo-rail .photo-tile:hover{transform:translateY(-5px);box-shadow:0 24px 48px rgba(18,30,70,.18)}.premium-photo-rail .photo-tile:hover img{transform:scale(1.045)}}
+.premium-photo-rail .photo-tile.two img,.premium-photo-rail .photo-tile.four img,.premium-photo-rail .photo-tile.six img{object-position:center}
+@media(max-width:640px){.premium-photo-rail .photo-tile{border-width:2px;border-radius:18px}}
+@media(prefers-reduced-motion:reduce){.premium-photo-rail .photo-tile,.premium-photo-rail .photo-tile img{transition:none}}
 </style>
 
 <style id="schoolflow-native-landing-style">
@@ -90,14 +98,13 @@ footer{background:#0e1634;color:#dce1f5;padding:39px 0 30px}.footer-top{display:
         </aside>
       </div>
       <div class="container">
-        <div class="photo-rail" aria-label="AI-generated illustrations of students, teachers and families">
-          <div class="photo-tile one"><img alt="Smiling primary-school student" data-ai-photo="assets/lexicon-ai-young.webp" src="assets/student-young.webp" loading="lazy"></div>
-          <div class="photo-tile two"><img alt="Senior student smiling at school" data-ai-photo="assets/lexicon-ai-senior.webp" src="assets/student-senior.webp" loading="lazy"></div>
-          <div class="photo-tile three"><img alt="Happy student engaged in learning" data-ai-photo="assets/lexicon-ai-primary.webp" src="assets/student-primary.webp" loading="lazy"></div>
-          <span class="float-doodle" aria-hidden="true">✧</span>
-          <div class="photo-tile four"><img alt="Teacher supporting a young student" data-ai-photo="assets/lexicon-ai-teacher.webp" src="assets/teacher-student.webp" loading="lazy"></div>
-          <div class="photo-tile five"><img alt="Students sharing a moment at school" data-ai-photo="assets/lexicon-ai-friends.webp" src="assets/students-friends.webp" loading="lazy"></div>
-          <div class="photo-tile six"><img alt="A parent and child enjoying a happy moment" data-ai-photo="assets/lexicon-ai-family.webp" src="assets/parent-child.webp" loading="lazy"></div>
+        <div class="photo-rail premium-photo-rail" aria-label="Lexicon Schools campus photography and illustrative school-life imagery">
+          <div class="photo-tile one"><img alt="Student at Lexicon Schools — illustrative image" src="assets/student-young.webp" loading="lazy" decoding="async"></div>
+          <div class="photo-tile two"><img alt="The Lexicon International School, Kalyani Nagar — campus photography" src="assets/campus-kalyani-nagar.png" loading="lazy" decoding="async"></div>
+          <div class="photo-tile three"><img alt="Students learning at Lexicon Schools — illustrative image" src="assets/student-primary.webp" loading="lazy" decoding="async"></div>
+          <div class="photo-tile four"><img alt="The Lexicon International School, Wagholi — campus photography" src="assets/campus-wagholi.webp" loading="lazy" decoding="async"></div>
+          <div class="photo-tile five"><img alt="Students at Lexicon Schools — illustrative image" src="assets/students-friends.webp" loading="lazy" decoding="async"></div>
+          <div class="photo-tile six"><img alt="The Lexicon School, Hadapsar — campus photography" src="assets/campus-hadapsar.webp" loading="lazy" decoding="async"></div>
         </div>
         <div class="facts-row">
           <div class="fact-card"><div class="fact-icon purple" aria-hidden="true">✦</div><strong>Nursery to XII</strong><span>Guidance across learning stages</span></div>
@@ -137,7 +144,7 @@ footer{background:#0e1634;color:#dce1f5;padding:39px 0 30px}.footer-top{display:
 
     <section class="bottom-cta"><div class="container bottom-flex"><div><h2>Every great journey begins with a first step.</h2><p>Discover the Lexicon learning experience for your child.</p></div><a href="#enquiry" class="btn">Enquire for Admissions →</a></div></section>
   </main>
-  <footer id="privacy"><div class="container"><div class="footer-top"><div><img src="assets/lexicon-official-logo.png" alt="The Lexicon Schools logo"><p>The Lexicon Schools · Pune, Maharashtra</p></div></div><div class="foot-divider"></div><div class="footer-bottom"><span><strong>Privacy:</strong> Admission enquiries are handled through SchoolFlow CRM when submission succeeds. Images are AI-generated illustrations, not verified campus photography. The hosting website must publish an appropriate privacy notice.</span><span>Admission eligibility and availability are subject to confirmation by the school.</span></div></div></footer>
+  <footer id="privacy"><div class="container"><div class="footer-top"><div><img src="assets/lexicon-official-logo.png" alt="The Lexicon Schools logo"><p>The Lexicon Schools · Pune, Maharashtra</p></div></div><div class="foot-divider"></div><div class="footer-bottom"><span><strong>Privacy:</strong> Admission enquiries are handled through SchoolFlow CRM when submission succeeds. The hero gallery combines campus photography and illustrative school-life images; illustrative images do not represent verified school activities. The hosting website must publish an appropriate privacy notice.</span><span>Admission eligibility and availability are subject to confirmation by the school.</span></div></div></footer>
   <div class="mobile-cta"><a href="#enquiry">Enquire for Admissions →</a></div>
 <script src="site.js" defer></script>
 <script src="landing-cta.js" defer></script>
